@@ -58,6 +58,18 @@ Gunsmith repairs and parts live in lxr-weapons; treatment in lxr-doctor.
 | `lxr:shops:bought` (src, storeId, receipt, total) · `lxr:shops:sold` (src, storeId, line, total) | server | events |
 | `Open(storeId)` · `IsOpen()` | client | open a counter from another resource |
 
+## Building the interface
+
+The counter is a Vite + React + TypeScript bundle. `html/` is the built
+output the manifest ships (kit files, `style.css`, `app.js`); the source is
+`ui/`:
+
+```bash
+cd ui && npm install && npm run build
+```
+
+`style.css` uses kit tokens only and `tools/kit_check.py` still guards it.
+
 ## Licence
 
 © 2026 iBoss21 / LXRCore — All Rights Reserved. See `LICENSE`.

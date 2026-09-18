@@ -38,7 +38,9 @@ Config.Lang = 'en'
 -- ████████████████████████ TRADE ═════════════════════════════════════════════════
 -- ████████████████████████████████████████████████████████████████████████████████
 Config.Trade = {
-    account = 'cash',            -- what the counter takes
+    account = 'cash',            -- what the counter takes by default
+    accounts = { 'cash', 'bank' }, -- purses the counter accepts; the player picks one at the till
+    images = 'nui://lxr-inventory/html/images/', -- item pictures (the inventory's icon set)
     sellPct = 0.45,              -- a store pays this share of the ledger value (by quality) when buying from players
     maxPerPurchase = 50,
     openHours = nil,             -- { from = 6, to = 22 } closes counters at night (nil = always open)

@@ -115,7 +115,9 @@ local function counter(src, store)
         end
     end
     table.sort(sells, function(a, b) return a.slot < b.slot end)
-    return { store = { id = store.id, label = store.label, kind = store.kind, priceMult = store.priceMult or 1 }, shelves = shelves, sells = sells, cash = P.PlayerData.money[Config.Trade.account] or 0, closed = isClosed, maxPerPurchase = Config.Trade.maxPerPurchase }
+    local purses = {}
+    for _, a in ipairs(Config.Trade.accounts or { Config.Trade.account }) do purses[a] = P.PlayerData.money[a] or 0 end
+    return { store = { id = store.id, label = store.label, kind = store.kind, priceMult = store.priceMult or 1 }, shelves = shelves, sells = sells, cash = P.PlayerData.money[Config.Trade.account] or 0, purses = purses, accounts = Config.Trade.accounts or { Config.Trade.account }, closed = isClosed, maxPerPurchase = Config.Trade.maxPerPurchase }
 end
 
 LXR.RPC.Register('lxr-shops:open', function(src, id)
@@ -128,7 +130,7 @@ LXR.RPC.Register('lxr-shops:open', function(src, id)
     return true, counter(src, store), Lang.bundle(), LXRCore.Brand
 end)
 
-LXR.RPC.Register('lxr-shops:buy', function(src, id, cart)
+LXR.RPC.Register('lxr-shops:buy', function(src, id, cart, account)
     if limited(src) then return false, 'rate' end
     local P, store = player(src), S.Store(id)
     if not P or not store or type(cart) ~= 'table' then return false, 'invalid' end
@@ -152,9 +154,11 @@ LXR.RPC.Register('lxr-shops:buy', function(src, id, cart)
     end
     if #lines == 0 then return false, 'invalid' end
     total = LXRShared.Round(total, 2)
-    if (P.PlayerData.money[Config.Trade.account] or 0) < total then return false, 'no_money', total end
+    local purse = Config.Trade.account
+    for _, a in ipairs(Config.Trade.accounts or { purse }) do if a == account then purse = a end end
+    if (P.PlayerData.money[purse] or 0) < total then return false, 'no_money', total end
     for _, l in ipairs(lines) do if not Inventory.CanCarry(src, l.name, l.amount) then return false, 'too_heavy', l.def.label end end
-    if not P.Functions.RemoveMoney(Config.Trade.account, total, 'shop:' .. store.id) then return false, 'no_money', total end
+    if not P.Functions.RemoveMoney(purse, total, 'shop:' .. store.id) then return false, 'no_money', total end
     local receipt = {}
     for _, l in ipairs(lines) do
         local ok = false

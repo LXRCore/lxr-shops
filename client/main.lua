@@ -34,13 +34,13 @@ local function open(store)
     if not ok then return toast('error.' .. tostring(data), 'error') end
     session = { store = store }
     SetNuiFocus(true, true)
-    SendNUIMessage({ action = 'open', data = data, locale = bundle, brand = brand or LXRCore.Brand, lang = Config.Lang })
+    SendNUIMessage({ action = 'open', data = data, locale = bundle, brand = brand or LXRCore.Brand, lang = Config.Lang, images = Config.Trade.images })
 end
 
 RegisterNUICallback('close', function(_, cb) close() cb({ ok = true }) end)
 RegisterNUICallback('buy', function(d, cb)
     if not session then return cb({ ok = false }) end
-    local ok, res, extra = LXR.RPC.Server('lxr-shops:buy', session.store.id, d.cart)
+    local ok, res, extra = LXR.RPC.Server('lxr-shops:buy', session.store.id, d.cart, d.account)
     if not ok then toast('error.' .. tostring(res), 'error', { amount = extra, label = extra }) return cb({ ok = false, why = res }) end
     toast('info.paid', 'success', { amount = ('%.2f'):format(extra or 0) })
     cb({ ok = true, data = res })

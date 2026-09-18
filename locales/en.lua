@@ -15,5 +15,8 @@ Locale.Register('en', {
         browse = 'Browse the counter', closed = 'After hours', hint_close = 'leave', cart = 'On the counter', clear = 'Clear', total = 'Total', cash = 'Cash', pay = 'Pay', close = 'Leave',
         sell = 'Sell', you_carry = 'What you carry', nothing_to_sell = 'Nothing here the store wants.', nothing_for_sale = 'This counter only buys.', owned = 'you have', quality = 'condition',
         each = 'each', in_stock = 'in stock', out_of_stock = 'out of stock', add = 'Add', cart_empty = 'Nothing on the counter yet.',
+        buy = 'Buy', purchases = 'Purchases', search = 'search the shelves', shelves = 'Shelves', all = 'Everything', price = 'Price', n_in_stock = '%{n} in stock',
+        pay_with = 'Pay with %{purse}', sell_one = 'Sell one', sell_all = 'Sell all', no_purchases = 'Nothing bought yet.',
     },
+    purse = { cash = 'Cash', bank = 'Bank' },
 })

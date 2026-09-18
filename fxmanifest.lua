@@ -25,7 +25,7 @@ lua54 'yes'
 name 'lxr-shops'
 author 'iBoss21 / LXRCore'
 description 'LXRCore v3 shops: counters built from the catalog at 1899 ledger prices, buying and selling, limited stock, clerks through lxr-interact'
-version '3.0.0'
+version '3.1.0'
 repository 'https://github.com/LXRCore/lxr-shops'
 
 shared_scripts {

@@ -101,13 +101,13 @@ if arg and arg[1] == '--mock' and arg[2] then
     local shelves = {}
     for _, sh in ipairs(S.Shelves('general')) do
         local items = {}
-        for _, def in ipairs(sh.items) do items[#items + 1] = { name = def.name, label = def.label, description = def.description, category = def.category, price = S.Price(def.name, st), weight = def.weight } end
+        for i, def in ipairs(sh.items) do items[#items + 1] = { name = def.name, label = def.label, description = def.description, category = def.category, price = S.Price(def.name, st), weight = def.weight, rarity = def.rarity, stock = (i % 7 == 0) and 0 or (12 + (i * 5) % 40) } end
         shelves[#shelves + 1] = { label = sh.label, items = items }
     end
     local sells = { { slot = 3, name = 'iron_ore', label = 'Iron Ore', amount = 12, offer = S.Offer('iron_ore', nil, st) }, { slot = 7, name = 'bream', label = 'Bream', amount = 2, offer = S.Offer('bream', { quality = 2 }, st), quality = 2 } }
-    local data = { store = { id = st.id, label = st.label, kind = st.kind, priceMult = 1 }, shelves = shelves, sells = sells, cash = 23.40, closed = false, maxPerPurchase = Config.Trade.maxPerPurchase }
+    local data = { store = { id = st.id, label = st.label, kind = st.kind, priceMult = 1 }, shelves = shelves, sells = sells, cash = 23.40, purses = { cash = 23.40, bank = 140.00 }, accounts = { 'cash', 'bank' }, closed = false, maxPerPurchase = Config.Trade.maxPerPurchase }
     local f = assert(io.open(arg[2], 'w'))
-    f:write('window.__LXR_MOCK__ = ' .. json.encode({ action = 'open', data = data, locale = Lang.bundle(), lang = Config.Lang, brand = { name = 'The Land of Wolves', theme = 'night' } }) .. ';\n')
+    f:write('window.__LXR_MOCK__ = ' .. json.encode({ action = 'open', data = data, locale = Lang.bundle(), lang = Config.Lang, images = '/lxr-inventory/html/images/', brand = { name = 'The Land of Wolves', theme = 'night' } }) .. ';\n')
     f:close()
     print('mock written to ' .. arg[2])
 end

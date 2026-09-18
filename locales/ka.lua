@@ -15,5 +15,8 @@ Locale.Register('ka', {
         browse = 'დახლის დათვალიერება', closed = 'სამუშაო საათების შემდეგ', hint_close = 'წასვლა', cart = 'დახლზე', clear = 'გასუფთავება', total = 'სულ', cash = 'ნაღდი', pay = 'გადახდა', close = 'წასვლა',
         sell = 'გაყიდვა', you_carry = 'რაც თან გაქვს', nothing_to_sell = 'აქ მაღაზიას არაფერი უნდა.', nothing_for_sale = 'ეს დახლი მხოლოდ ყიდულობს.', owned = 'გაქვს', quality = 'მდგომარეობა',
         each = 'თითო', in_stock = 'მარაგშია', out_of_stock = 'მარაგში არ არის', add = 'დამატება', cart_empty = 'დახლზე ჯერ არაფერია.',
+        buy = 'ყიდვა', purchases = 'ნასყიდობა', search = 'თაროებზე ძებნა', shelves = 'თაროები', all = 'ყველაფერი', price = 'ფასი', n_in_stock = 'მარაგში %{n}',
+        pay_with = 'გადახდა: %{purse}', sell_one = 'ერთის გაყიდვა', sell_all = 'ყველას გაყიდვა', no_purchases = 'ჯერ არაფერი გიყიდია.',
     },
+    purse = { cash = 'ნაღდი', bank = 'ბანკი' },
 })
