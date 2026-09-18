@@ -1,44 +1,52 @@
 --[[
-    ██╗     ██╗  ██╗██████╗        ███████╗██╗  ██╗ ██████╗ ██████╗ ███████╗
-    ██║     ╚██╗██╔╝██╔══██╗       ██╔════╝██║  ██║██╔═══██╗██╔══██╗██╔════╝
-    ██║      ╚███╔╝ ██████╔╝█████╗ ███████╗███████║██║   ██║██████╔╝███████╗
-    ██║      ██╔██╗ ██╔══██╗╚════╝ ╚════██║██╔══██║██║   ██║██╔═══╝ ╚════██║
-    ███████╗██╔╝ ██╗██║  ██║       ███████║██║  ██║╚██████╔╝██║     ███████║
-    ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚══════╝
+    LXR Core - Shops
 
-    🐺 LXR Shops — Dynamic Multi-Framework Shop System
+    Brand:       LXRCore — Lux Empire eXperience RedM Core
+    Product:     wolves.land / The Land of Wolves
+    Developer:   iBoss21 / LXRCore
+    Website:     https://www.lxrcore.com
+    Discord:     https://discord.gg/ZHMKVYyhBa (development)
+    GitHub:      https://github.com/LXRCore
 
-    ═══════════════════════════════════════════════════════════════════════════════
-    SERVER INFORMATION
-    ═══════════════════════════════════════════════════════════════════════════════
+    Version: 1.0.0
+    Performance Target: 0.00 ms idle
 
-    Server:    The Land of Wolves 🐺
-    Developer: iBoss21 / The Lux Empire
-    Website:   https://www.wolves.land
-    Discord:   https://discord.gg/CrKcWdfd3A
-    Store:     https://theluxempire.tebex.io
+    Framework Support:
+    - LXR Core v3 (Native — GetCoreObject / GetLXR)
 
-    ═══════════════════════════════════════════════════════════════════════════════
-
-    © 2026 iBoss21 / The Lux Empire | wolves.land | All Rights Reserved
+    © 2026 iBoss21 / LXRCore | lxrcore.com | All Rights Reserved
 ]]
 
 fx_version 'cerulean'
-game       'rdr3'
-
+game 'rdr3'
 rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
+lua54 'yes'
 
-name        'lxr-shops'
-author      'iBoss21 / The Lux Empire'
-description '🐺 LXR Shops - Dynamic Multi-Framework Shop System | wolves.land'
-version     '1.0.2'
+name 'lxr-shops'
+author 'iBoss21 / LXRCore'
+description 'LXRCore v3 shops: counters built from the catalog at 1899 ledger prices, buying and selling, limited stock, clerks through lxr-interact'
+version '3.0.0'
+repository 'https://github.com/LXRCore/lxr-shops'
 
-shared_script 'config.lua'
-server_script 'server/*.lua'
-client_script 'client/*.lua'
-
-dependencies {
-    'lxr-inventory'
+shared_scripts {
+    'shared/locale.lua',
+    'locales/*.lua',
+    'config.lua',
+    'shared/rules.lua',
 }
 
-lua54 'yes'
+client_script 'client/main.lua'
+server_script 'server/main.lua'
+
+ui_page 'html/index.html'
+
+files {
+    'html/index.html',
+    'html/lxr-ui.css',
+    'html/style.css',
+    'html/fonts/*.woff2',
+    'html/app.js',
+    'html/img/*.png',
+}
+
+dependencies { 'lxr-core', 'lxr-nui', 'lxr-inventory', 'lxr-interact' }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!-- LXR-SHOPS | LXR UI Kit | © 2026 iBoss21 / LXRCore | lxrcore.com -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Counter</title>
+  <link rel="stylesheet" href="lxr-ui.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="lxr">
+  <div id="app" class="lxr-hidden">
+    <header class="sh-top lxr-hit">
+      <div class="sh-brand">
+        <img class="sh-logo" src="img/lxrcore-logo.png" alt="">
+        <div><span class="lxr-mono lxr-t-ash" id="kind"></span><h1 class="lxr-cut sh-title" id="store-label"></h1></div>
+        <span class="lxr-mono sh-closed lxr-hidden" id="closed" data-l="closed"></span>
+      </div>
+      <div class="sh-hints lxr-mono lxr-t-smoke"><span class="lxr-key">Backspace</span><span data-l="hint_close"></span></div>
+    </header>
+
+    <nav class="sh-tabs lxr-hit" id="tabs"></nav>
+
+    <section class="sh-list lxr-hit">
+      <div class="sh-list__head lxr-rule-b"><span class="lxr-mono lxr-t-ash" id="shelf-label"></span><span class="lxr-grow"></span><span class="lxr-mono lxr-t-smoke" id="count"></span></div>
+      <div class="sh-rows" id="rows"></div>
+    </section>
+
+    <aside class="sh-cart lxr-hit">
+      <div class="sh-list__head lxr-rule-b"><span class="lxr-mono lxr-t-ash" data-l="cart"></span><span class="lxr-grow"></span><button class="lxr-btn lxr-btn-ghost lxr-btn-sm" id="btn-clear" data-l="clear"></button></div>
+      <div class="sh-cart__rows" id="cart"></div>
+      <div class="sh-cart__foot">
+        <div class="sh-sum"><span class="lxr-mono lxr-t-ash" data-l="total"></span><span class="lxr-grow"></span><span class="lxr-num sh-total" id="total">$0.00</span></div>
+        <div class="sh-sum lxr-mono lxr-t-smoke"><span data-l="cash"></span><span class="lxr-grow"></span>$<span id="cash">0.00</span></div>
+        <button class="lxr-btn" id="btn-pay" data-l="pay"></button>
+      </div>
+    </aside>
+
+    <footer class="sh-foot lxr-hit"><span class="lxr-grow"></span><button class="lxr-btn lxr-btn-ghost" id="btn-close" data-l="close"></button></footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

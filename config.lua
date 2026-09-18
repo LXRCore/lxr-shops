@@ -1,272 +1,167 @@
 --[[
-    ██╗     ██╗  ██╗██████╗        ███████╗██╗  ██╗ ██████╗ ██████╗ ███████╗
-    ██║     ╚██╗██╔╝██╔══██╗       ██╔════╝██║  ██║██╔═══██╗██╔══██╗██╔════╝
-    ██║      ╚███╔╝ ██████╔╝█████╗ ███████╗███████║██║   ██║██████╔╝███████╗
-    ██║      ██╔██╗ ██╔══██╗╚════╝ ╚════██║██╔══██║██║   ██║██╔═══╝ ╚════██║
-    ███████╗██╔╝ ██╗██║  ██║       ███████║██║  ██║╚██████╔╝██║     ███████║
-    ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚══════╝
+    ██╗     ██╗  ██╗██████╗       ███████╗██╗  ██╗ ██████╗ ██████╗ ███████╗
+    ██║     ╚██╗██╔╝██╔══██╗      ██╔════╝██║  ██║██╔═══██╗██╔══██╗██╔════╝
+    ██║      ╚███╔╝ ██████╔╝█████╗███████╗███████║██║   ██║██████╔╝███████╗
+    ██║      ██╔██╗ ██╔══██╗╚════╝╚════██║██╔══██║██║   ██║██╔═══╝ ╚════██║
+    ███████╗██╔╝ ██╗██║  ██║      ███████║██║  ██║╚██████╔╝██║     ███████║
+    ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝      ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚══════╝
 
-    🐺 LXR Shops — Dynamic Multi-Framework Shop System
+    LXR Core - Shops
 
-    This configuration file controls store locations, product catalogues, and
-    framework settings for the lxr-shops resource. General-store, saloon,
-    gunsmith and farming-supply shops are all managed here.
+    Counters across the map. Every price is the core ledger's 1899 value
+    times the store's mark-up; every shelf is a filter over the catalog
+    (categories, tags, names, legality) so a new catalog item lands on the
+    right shelf without touching this file. Stock can be infinite or limited
+    with restocking; selling pays a share of the ledger value by quality.
 
-    ═══════════════════════════════════════════════════════════════════════════════
-    SERVER INFORMATION
-    ═══════════════════════════════════════════════════════════════════════════════
+    Brand:       LXRCore — Lux Empire eXperience RedM Core
+    Product:     wolves.land / The Land of Wolves
+    Developer:   iBoss21 / LXRCore
+    Website:     https://www.lxrcore.com
+    Discord:     https://discord.gg/ZHMKVYyhBa (development)
+    GitHub:      https://github.com/LXRCore
 
-    Server:      The Land of Wolves 🐺
-    Tagline:     Georgian RP 🇬🇪 | მგლების მიწა - რჩეულთა ადგილი!
-    Description: ისტორია ცოცხლდება აქ! (History Lives Here!)
-    Type:        Serious Hardcore Roleplay
-    Access:      Discord & Whitelisted
+    Version: 3.0.0
+    Performance Target: 0.00 ms idle (clerks are lxr-interact targets; nothing runs until a counter opens)
 
-    Developer:   iBoss21 / The Lux Empire
-    Website:     https://www.wolves.land
-    Discord:     https://discord.gg/CrKcWdfd3A
-    GitHub:      https://github.com/iBoss21
-    Store:       https://theluxempire.tebex.io
-    Server:      https://servers.redm.net/servers/detail/8gj7eb
-
-    ═══════════════════════════════════════════════════════════════════════════════
-
-    Version: 1.0.2
-
-    Framework Support:
-    - LXR Core  (Primary)
-    - RSG Core  (Primary)
-    - VORP Core (Supported / Legacy)
-    - RedEM:RP  (Optional)
-    - QBR Core  (Optional)
-    - QR Core   (Optional)
-    - Standalone (Fallback)
-
-    ═══════════════════════════════════════════════════════════════════════════════
-    CREDITS
-    ═══════════════════════════════════════════════════════════════════════════════
-
-    Script Author: iBoss21 / The Lux Empire for The Land of Wolves
-
-    © 2026 iBoss21 / The Lux Empire | wolves.land | All Rights Reserved
+    © 2026 iBoss21 / LXRCore | lxrcore.com | All Rights Reserved
 ]]
 
--- ═══════════════════════════════════════════════════════════════════════════════
--- 🐺 RESOURCE NAME PROTECTION - RUNTIME CHECK
--- ═══════════════════════════════════════════════════════════════════════════════
-
-local REQUIRED_RESOURCE_NAME = "lxr-shops"
-local currentResourceName = GetCurrentResourceName()
-
-if currentResourceName ~= REQUIRED_RESOURCE_NAME then
-    error(string.format([[
-
-        ═══════════════════════════════════════════════════════════════════════════════
-        ❌ CRITICAL ERROR: RESOURCE NAME MISMATCH ❌
-        ═══════════════════════════════════════════════════════════════════════════════
-
-        Expected: %s
-        Got: %s
-
-        This resource is branded and must maintain the correct name.
-        Rename the folder to "%s" to continue.
-
-        🐺 wolves.land - The Land of Wolves
-
-        ═══════════════════════════════════════════════════════════════════════════════
-
-    ]], REQUIRED_RESOURCE_NAME, currentResourceName, REQUIRED_RESOURCE_NAME))
-end
-
-Config = {}
+Config = Config or {}
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ SERVER BRANDING & INFO ████████████████████████████████
+-- ████████████████████████ LANGUAGE ██████████████████████████████████████████████
 -- ████████████████████████████████████████████████████████████████████████████████
+Config.Lang = 'en'
 
-Config.ServerInfo = {
-    name        = 'The Land of Wolves 🐺',
-    tagline     = 'Georgian RP 🇬🇪 | მგლების მიწა - რჩეულთა ადგილი!',
-    description = 'ისტორია ცოცხლდება აქ!', -- History Lives Here!
-    type        = 'Serious Hardcore Roleplay',
-    access      = 'Discord & Whitelisted',
+-- ████████████████████████████████████████████████████████████████████████████████
+-- ████████████████████████ TRADE ═════════════════════════════════════════════════
+-- ████████████████████████████████████████████████████████████████████████████████
+Config.Trade = {
+    account = 'cash',            -- what the counter takes
+    sellPct = 0.45,              -- a store pays this share of the ledger value (by quality) when buying from players
+    maxPerPurchase = 50,
+    openHours = nil,             -- { from = 6, to = 22 } closes counters at night (nil = always open)
+    closedMult = 1.25,           -- when open outside hours is allowed, the night mark-up
+    nightOpen = true,
+    receipts = true,             -- lxr:shops:bought / sold carry the receipt for ledgers and logs
+}
 
-    -- Contact & Links
-    website       = 'https://www.wolves.land',
-    discord       = 'https://discord.gg/CrKcWdfd3A',
-    github        = 'https://github.com/iBoss21',
-    store         = 'https://theluxempire.tebex.io',
-    serverListing = 'https://servers.redm.net/servers/detail/8gj7eb',
-
-    -- Developer Info
-    developer = 'iBoss21 / The Lux Empire',
-
-    -- Tags
-    tags = { 'RedM', 'Georgian', 'SeriousRP', 'Whitelist', 'Shops', 'Economy', 'Survival' }
+-- limited stock: quantities live per shop item and restock on a timer (persisted)
+Config.Stock = {
+    limited = false,             -- false: every shelf is bottomless
+    defaultQty = 25,
+    restockEveryMs = 3600000,    -- one hour
+    restockTo = 25,
+    persist = true,              -- lxr_shops_stock
 }
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ FRAMEWORK CONFIGURATION ███████████████████████████████
+-- ████████████████████████ SHELVES ═══════════════════════════════════════════════
 -- ████████████████████████████████████████████████████████████████████████████████
+-- A shelf is a filter over the core catalog. Fields (all optional, all combine with AND):
+--   categories = { 'food', 'drink' }     tags = { 'weapon_care' }     names = { 'bread' }
+--   exclude = { 'ammo_arrow_dynamite' }  legal = true|false|nil       rarityMax = 'uncommon'
+-- `buys` uses the same shape and lists what the store purchases from players.
+Config.Shelves = {
+    general = {
+        { label = 'Provisions', categories = { 'food', 'drink', 'alcohol', 'tobacco' }, legal = true },
+        { label = 'Medicine',   categories = { 'medical', 'herb' }, legal = true, rarityMax = 'uncommon' },
+        { label = 'Tools',      categories = { 'tool', 'kit', 'camp', 'fishing', 'wagon' }, legal = true, rarityMax = 'uncommon' },
+        { label = 'Materials',  categories = { 'material', 'component' }, legal = true, rarityMax = 'uncommon' },
+        { label = 'Horse',      categories = { 'horse', 'tack' }, legal = true, rarityMax = 'uncommon' },
+        { label = 'Sundries',   categories = { 'personal', 'document', 'misc' }, legal = true, rarityMax = 'uncommon' },
+    },
+    gunsmith = {
+        { label = 'Sidearms',   categories = { 'weapon' }, weaponCategories = { 'revolver', 'pistol' }, legal = true, rarityMax = 'uncommon' },
+        { label = 'Long arms',  categories = { 'weapon' }, weaponCategories = { 'repeater', 'rifle', 'sniper', 'shotgun', 'bow' }, legal = true, rarityMax = 'uncommon' },
+        { label = 'Blades',     categories = { 'weapon' }, weaponCategories = { 'melee', 'thrown' }, legal = true, rarityMax = 'uncommon' },
+        { label = 'Cartridges', categories = { 'ammo' }, legal = true },
+        { label = 'Gun care',   tags = { 'weapon_care' } },
+    },
+    saloon = {
+        { label = 'Drinks',     categories = { 'drink', 'alcohol' }, legal = true },
+        { label = 'Food',       categories = { 'food' }, legal = true },
+        { label = 'Tobacco',    categories = { 'tobacco' }, legal = true },
+    },
+    doctor = {
+        { label = 'Medicine',   categories = { 'medical' }, legal = true },
+        { label = 'Herbs',      categories = { 'herb' }, legal = true },
+    },
+    butcher = {
+        { label = 'Meat',       categories = { 'meat' }, legal = true },
+    },
+    fence = {
+        { label = 'Under the counter', legal = false, exclude = { 'bank_bag', 'strongbox' } },
+    },
+}
 
---[[
-    Framework Priority (in order):
-    1. LXR-Core  (Primary)
-    2. RSG-Core  (Primary)
-    3. VORP Core (Supported)
-    4. RedEM:RP  (Optional - if detected)
-    5. QBR-Core  (Optional - if detected)
-    6. QR-Core   (Optional - if detected)
-    7. Standalone (Fallback)
-]]
-
-Config.Framework = 'auto' -- 'auto' or manual: 'lxr-core', 'rsg-core', 'vorp_core', 'redem_roleplay', 'qbr-core', 'qr-core', 'standalone'
-
--- Framework-specific settings
-Config.FrameworkSettings = {
-    ['lxr-core'] = {
-        resource  = 'lxr-core',
-        inventory = 'lxr-inventory',
-        -- Inventory open event
-        inventoryEvent = 'inventory:server:OpenInventory',
-        -- Event naming convention
-        events = {
-            server   = 'lxr-shops:server:%s',
-            client   = 'lxr-shops:client:%s',
-            callback = 'lxr-shops:server:%s'
-        }
-    },
-    ['rsg-core'] = {
-        resource  = 'rsg-core',
-        inventory = 'rsg-inventory',
-        inventoryEvent = 'inventory:server:OpenInventory',
-        events = {
-            server   = 'lxr-shops:server:%s',
-            client   = 'lxr-shops:client:%s',
-            callback = 'lxr-shops:server:%s'
-        }
-    },
-    ['vorp_core'] = {
-        resource  = 'vorp_core',
-        inventory = 'vorp_inventory-lua',
-        inventoryEvent = 'vorpinventory:openShop',
-        events = {
-            server = 'lxr-shops:server:%s',
-            client = 'lxr-shops:client:%s'
-        }
-    },
-    ['redem_roleplay'] = {
-        resource  = 'redem_roleplay',
-        inventory = 'redem_inventory',
-        inventoryEvent = 'inventory:server:OpenInventory',
-        events = {
-            server = 'lxr-shops:server:%s',
-            client = 'lxr-shops:client:%s'
-        }
-    },
-    ['qbr-core'] = {
-        resource  = 'qbr-core',
-        inventory = 'qbr-inventory',
-        inventoryEvent = 'inventory:server:OpenInventory',
-        events = {
-            server = 'lxr-shops:server:%s',
-            client = 'lxr-shops:client:%s'
-        }
-    },
-    ['qr-core'] = {
-        resource  = 'qr-core',
-        inventory = 'qr-inventory',
-        inventoryEvent = 'inventory:server:OpenInventory',
-        events = {
-            server = 'lxr-shops:server:%s',
-            client = 'lxr-shops:client:%s'
-        }
-    },
-    ['standalone'] = {
-        resource       = 'standalone',
-        inventory      = 'none',
-        inventoryEvent = 'none',
-        events         = {}
-    }
+-- what each kind of store buys from players
+Config.Buys = {
+    general  = { { categories = { 'material', 'component', 'herb', 'collectible', 'fishing' }, legal = true } },
+    gunsmith = { { categories = { 'weapon', 'ammo' }, legal = true } },
+    saloon   = {},
+    doctor   = { { categories = { 'herb' } } },
+    butcher  = { { categories = { 'meat', 'hunting' } } },
+    fence    = { { legal = false }, { categories = { 'valuable', 'contraband' } } },
+    trapper  = { { categories = { 'hunting' } } },
 }
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ SHOP PRODUCTS █████████████████████████████████████████
+-- ████████████████████████ THE STORES ════════════════════════════════════════════
 -- ████████████████████████████████████████████████████████████████████████████████
+-- kind → shelves + buys; priceMult on the ledger value; clerk = ped model at the counter;
+-- jobs = { bank = 0 } locks the counter to a job (staff stores); sells = false for buy-only counters.
+Config.Stores = {
+    -- general stores
+    { id = 'gen_valentine',  kind = 'general', label = 'Valentine General Store',   coords = vector3(-322.43, 803.80, 117.90), heading = 96.0,  clerk = 'u_m_m_valgenstoreowner_01', blip = true },
+    { id = 'gen_rhodes',     kind = 'general', label = 'Rhodes General Store',      coords = vector3(1328.99, -1293.28, 77.02), heading = 132.0, clerk = 'u_m_m_rhdgenstoreowner_01', blip = true },
+    { id = 'gen_strawberry', kind = 'general', label = 'Strawberry General Store',  coords = vector3(-1791.49, -386.87, 160.30), heading = 130.0, clerk = 'u_m_m_strgenstoreowner_01', blip = true, priceMult = 1.05 },
+    { id = 'gen_annesburg',  kind = 'general', label = 'Annesburg General Store',   coords = vector3(2931.35, 1365.94, 45.19), heading = 20.0,  clerk = 'u_m_m_bwmstablehand_01', blip = true, priceMult = 1.10 },
+    { id = 'gen_saintdenis', kind = 'general', label = 'Saint Denis General Store', coords = vector3(2859.81, -1200.37, 49.59), heading = 275.0, clerk = 'u_m_m_sdgenstoreowner_01', blip = true, priceMult = 1.15 },
+    { id = 'gen_tumbleweed', kind = 'general', label = 'Tumbleweed General Store',  coords = vector3(-5487.60, -2938.54, -0.38), heading = 350.0, clerk = 'u_m_m_tumgenstoreowner_01', blip = true, priceMult = 1.10 },
+    { id = 'gen_armadillo',  kind = 'general', label = 'Armadillo General Store',   coords = vector3(-3685.60, -2622.60, -13.43), heading = 190.0, clerk = 'u_m_m_armgenstoreowner_01', blip = true, priceMult = 1.10 },
+    { id = 'gen_blackwater', kind = 'general', label = 'Blackwater General Store',  coords = vector3(-785.18, -1323.83, 43.88), heading = 275.0, clerk = 'u_m_m_bwmgenstoreowner_01', blip = true, priceMult = 1.10 },
+    { id = 'gen_vanhorn',    kind = 'general', label = 'Van Horn General Store',    coords = vector3(3027.03, 561.00, 44.72), heading = 100.0, clerk = 'u_m_m_vhtgenstoreowner_01', blip = true, priceMult = 1.05 },
+    -- gunsmiths (repairs and parts are lxr-weapons; these sell)
+    { id = 'gun_valentine',  kind = 'gunsmith', label = 'Valentine Gunsmith',   coords = vector3(-281.97, 781.09, 119.52), heading = 270.0, clerk = 'u_m_m_valgunsmith_01', blip = true },
+    { id = 'gun_rhodes',     kind = 'gunsmith', label = 'Rhodes Gunsmith',      coords = vector3(1322.67, -1323.16, 77.88), heading = 90.0,  clerk = 'u_m_m_rhdgunsmith_01', blip = true },
+    { id = 'gun_saintdenis', kind = 'gunsmith', label = 'Saint Denis Gunsmith', coords = vector3(2716.42, -1285.42, 49.63), heading = 180.0, clerk = 'u_m_m_sdgunsmith_01', blip = true, priceMult = 1.15 },
+    { id = 'gun_tumbleweed', kind = 'gunsmith', label = 'Tumbleweed Gunsmith',  coords = vector3(-5508.14, -2964.33, -0.62), heading = 90.0, clerk = 'u_m_m_tumgunsmith_01', blip = true, priceMult = 1.10 },
+    { id = 'gun_annesburg',  kind = 'gunsmith', label = 'Annesburg Gunsmith',   coords = vector3(2946.50, 1319.53, 44.82), heading = 260.0, clerk = 'u_m_m_anngunsmith_01', blip = true, priceMult = 1.10 },
+    -- saloons
+    { id = 'sal_valentine',  kind = 'saloon', label = 'Smithfield\'s Saloon',    coords = vector3(-313.26, 805.22, 118.98), heading = 190.0, clerk = 'u_m_m_valbartender_01', blip = true },
+    { id = 'sal_rhodes',     kind = 'saloon', label = 'Rhodes Parlour House',    coords = vector3(1340.14, -1374.99, 80.48), heading = 80.0,  clerk = 'u_m_m_rhdbartender_01', blip = true },
+    { id = 'sal_saintdenis', kind = 'saloon', label = 'Doyle\'s Tavern',         coords = vector3(2792.55, -1168.14, 47.93), heading = 20.0,  clerk = 'u_m_m_sdbartender_01', blip = true, priceMult = 1.20 },
+    { id = 'sal_blackwater', kind = 'saloon', label = 'Blackwater Saloon',       coords = vector3(-817.66, -1319.43, 43.67), heading = 275.0, clerk = 'u_m_m_bwmbartender_01', blip = true, priceMult = 1.10 },
+    { id = 'sal_tumbleweed', kind = 'saloon', label = 'Tumbleweed Saloon',       coords = vector3(-5518.35, -2906.40, -1.75), heading = 350.0, clerk = 'u_m_m_tumbartender_01', blip = true },
+    { id = 'sal_armadillo',  kind = 'saloon', label = 'Armadillo Saloon',        coords = vector3(-3699.70, -2594.50, -13.31), heading = 190.0, clerk = 'u_m_m_armbartender_01', blip = true },
+    { id = 'sal_vanhorn',    kind = 'saloon', label = 'Van Horn Saloon',         coords = vector3(2947.58, 528.07, 45.33), heading = 100.0, clerk = 'u_m_m_vhtbartender_01', blip = true },
+    -- doctors' counters (treatment is lxr-doctor; these sell)
+    { id = 'doc_valentine',  kind = 'doctor', label = 'Valentine Doctor',        coords = vector3(-288.62, 807.47, 119.38), heading = 275.0, clerk = 'u_m_m_valdoctor_01', blip = true },
+    { id = 'doc_saintdenis', kind = 'doctor', label = 'Saint Denis Doctor',      coords = vector3(2724.25, -1234.54, 50.37), heading = 90.0,  clerk = 'u_m_m_sddoctor_01', blip = true, priceMult = 1.15 },
+    -- butchers buy meat and pelts
+    { id = 'but_valentine',  kind = 'butcher', label = 'Valentine Butcher',      coords = vector3(-355.75, 789.03, 116.18), heading = 100.0, clerk = 'u_m_m_valbutcher_01', blip = true, sells = false },
+    { id = 'but_saintdenis', kind = 'butcher', label = 'Saint Denis Butcher',    coords = vector3(2750.11, -1291.68, 49.59), heading = 60.0,  clerk = 'u_m_m_sdbutcher_01', blip = true, sells = false },
+    -- the fence: under the counter, buys what nobody else will
+    { id = 'fence_emerald',  kind = 'fence', label = 'Emerald Station Fence',    coords = vector3(1522.66, 439.72, 90.68), heading = 40.0, clerk = 'u_m_m_emrfarmhand_01', blip = false, priceMult = 1.5 },
+}
 
--- Products available in different stores
-Config.Products = {
-    ["normal"] = {
-        [1] = { name = "water",        price = 2,   amount = 50, info = {}, type = "item" },
-        [2] = { name = "bread",        price = 2,   amount = 50, info = {}, type = "item" },
-        [3] = { name = "apple",        price = 1,   amount = 50, info = {}, type = "item" },
-        [4] = { name = "chocolate",    price = 2,   amount = 50, info = {}, type = "item" }
-    },
-    ["saloon"] = {
-        [1] = { name = "beer",         price = 7,   amount = 50,  info = {}, type = "item" },
-        [2] = { name = "whiskey",      price = 10,  amount = 50,  info = {}, type = "item" },
-        [3] = { name = "vodka",        price = 12,  amount = 50,  info = {}, type = "item" },
-        [4] = { name = "coffee",       price = 5,   amount = 500, info = {}, type = "item" }
-    },
-    ["weapons"] = {
-        [1] = { name = "weapon_revolver_cattleman", price = 250, amount = 250, info = {}, type = "item", requiresLicense = true },
-        [2] = { name = "ammo_revolver",            price = 15,  amount = 250, info = {}, type = "item" }
-    },
-    ["farming"] = {
-        [1]  = { name = 'seed_corn',             price = 0.10, amount = 10, info = {}, type = "item" },
-        [2]  = { name = 'seed_coffee',           price = 0.20, amount = 10, info = {}, type = "item" },
-        [3]  = { name = 'seed_tobacco',          price = 0.30, amount = 10, info = {}, type = "item" },
-        [4]  = { name = 'seed_american_ginseng', price = 0.40, amount = 50, info = {}, type = "item" },
-        [5]  = { name = 'seed_alaskan_ginseng',  price = 0.45, amount = 50, info = {}, type = "item" },
-        [6]  = { name = 'seed_black_berry',      price = 0.50, amount = 50, info = {}, type = "item" },
-        [7]  = { name = 'seed_bay_bolete',       price = 0.55, amount = 50, info = {}, type = "item" },
-        [8]  = { name = 'seed_black_currant',    price = 0.60, amount = 50, info = {}, type = "item" },
-        [9]  = { name = 'seed_huckle_berry',     price = 0.65, amount = 50, info = {}, type = "item" },
-        [10] = { name = 'seed_mint',             price = 0.70, amount = 50, info = {}, type = "item" }
-    }
+-- blip sprites per kind
+Config.Blips = {
+    general = 'blip_shop_store', gunsmith = 'blip_shop_gunsmith', saloon = 'blip_shop_saloon', doctor = 'blip_shop_doctor', butcher = 'blip_shop_butcher', fence = nil, trapper = 'blip_shop_trapper',
 }
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ SHOP LOCATIONS ████████████████████████████████████████
+-- ████████████████████████ SECURITY ══════════════════════════════════════════════
 -- ████████████████████████████████████████████████████████████████████████████████
-
--- Store locations and their product mixes
--- Format: { name = 'Store Name', products = 'Product Mix', coords = vector3(x, y, z), blip = Blip ID }
-Config.Locations = {
-    -- ── General Stores ──────────────────────────────────────────────────────────
-    { name = 'Rhodes General Store',      products = "normal",  coords = vector3(1328.99,  -1293.28, 77.02),  blip = 1475879922 },
-    { name = 'Valentine General Store',   products = "normal",  coords = vector3(-322.433,  803.797, 117.9),  blip = 1475879922 },
-    { name = 'Strawberry General Store',  products = "normal",  coords = vector3(-1791.49,  -386.87, 160.3),  blip = 1475879922 },
-    { name = 'Annesburg General Store',   products = "normal",  coords = vector3(2931.350,  1365.94,  45.19), blip = 1475879922 },
-    { name = 'Saint Denis General Store', products = "normal",  coords = vector3(2859.81,  -1200.37,  49.59), blip = 1475879922 },
-    { name = 'Tumbleweed General Store',  products = "normal",  coords = vector3(-5487.6,  -2938.54,  -0.38), blip = 1475879922 },
-    { name = 'Armadillo General Store',   products = "normal",  coords = vector3(-3685.6,   -2622.6, -13.43), blip = 1475879922 },
-    { name = 'Blackwater General Store',  products = "normal",  coords = vector3(-785.18,  -1323.83,  43.88), blip = 1475879922 },
-    { name = 'Van Horn General Store',    products = "normal",  coords = vector3(3027.030,   561.00,  44.720), blip = 1475879922 },
-
-    -- ── Gunsmiths ────────────────────────────────────────────────────────────────
-    { name = 'Valentine Gunsmith',        products = "weapons", coords = vector3(-281.970,   781.09, 119.52), blip = -145868367 },
-    { name = 'Tumbleweed Gunsmith',       products = "weapons", coords = vector3(-5508.14, -2964.33,  -0.62), blip = -145868367 },
-    { name = 'Saint Denis Gunsmith',      products = "weapons", coords = vector3(2716.42,  -1285.42,  49.63), blip = -145868367 },
-    { name = 'Rhodes Gunsmith',           products = "weapons", coords = vector3(1322.67,  -1323.16,  77.88), blip = -145868367 },
-    { name = 'Annesburg Gunsmith',        products = "weapons", coords = vector3(2946.50,   1319.530, 44.82), blip = -145868367 },
-
-    -- ── Saloons ──────────────────────────────────────────────────────────────────
-    { name = 'Valentine Saloon',          products = "saloon",  coords = vector3(-313.26,   805.220, 118.98), blip = 1879260108 },
-    { name = 'Tumbleweed Saloon',         products = "saloon",  coords = vector3(-5518.35,  -2906.4,  -1.75), blip = 1879260108 },
-    { name = 'Armadillo Saloon',          products = "saloon",  coords = vector3(-3699.7,   -2594.5, -13.31), blip = 1879260108 },
-    { name = 'Blackwater Saloon',         products = "saloon",  coords = vector3(-817.66,  -1319.43,  43.67), blip = 1879260108 },
-    { name = 'Rhodes Saloon',             products = "saloon",  coords = vector3(1340.14,  -1374.99,  80.48), blip = 1879260108 },
-    { name = 'Saint Denis Saloon',        products = "saloon",  coords = vector3(2792.55,  -1168.14,  47.93), blip = 1879260108 },
-    { name = 'Van Horn Saloon',           products = "saloon",  coords = vector3(2947.580,   528.070, 45.33),  blip = 1879260108 },
-
-    -- ── Farming Supplies ─────────────────────────────────────────────────────────
-    { name = 'Farming Supplies',          products = "farming", coords = vector3(2825.64,  -1318.15,  46.76), blip = 819673798 }
+Config.Security = {
+    rateLimit = { windowMs = 2000, burst = 10 },
+    maxDistance = 4.0,
+    promptDistance = 2.5,
 }
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ DEBUG SETTINGS ████████████████████████████████████████
+-- ████████████████████████ DEBUG ═════════════════════════════════════════════════
 -- ████████████████████████████████████████████████████████████████████████████████
-
-Config.Debug = false -- Enable debug prints and extra logging
-
+Config.Debug = { printBanner = true, log = false }
