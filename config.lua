@@ -98,7 +98,7 @@ Config.Shelves = {
 
 -- what each kind of store buys from players
 Config.Buys = {
-    general  = { { categories = { 'material', 'component', 'herb', 'collectible', 'fishing' }, legal = true } },
+    general  = { { categories = { 'material', 'component', 'herb', 'collectible', 'fishing' }, legal = true }, { tags = { 'vegetable', 'fruit' }, legal = true } },   -- produce from lxr-farming
     gunsmith = { { categories = { 'weapon', 'ammo' }, legal = true } },
     saloon   = {},
     doctor   = { { categories = { 'herb' } } },
