@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { onMessage, applyChrome, makeT, post, money, pad, type Msg } from './nui';
 
-type Item = { name: string; label: string; description?: string; category: string; price: number; stock?: number; weight: number; rarity?: string };
+type Item = { name: string; label: string; description?: string; category: string; price: number; drift?: number; stock?: number; weight: number; rarity?: string };
 type Shelf = { label: string; items: Item[] };
 type Sell = { slot: number; name: string; label: string; amount: number; offer: number; quality?: number };
 type Counter = { store: { id: string; label: string; kind: string }; shelves: Shelf[]; sells: Sell[]; purses: Record<string, number>; accounts: string[]; closed: boolean; maxPerPurchase: number; cash: number };
@@ -117,7 +117,7 @@ export function App() {
                   <div className="sh-card__name">{it.label}</div>
                   <div className="sh-card__desc">{it.description || ''}</div>
                   <div className="sh-card__foot">
-                    <div><div className="lxr-mono lxr-t-smoke sh-card__k">{t('ui.price')}</div><div className="sh-card__price lxr-num">{money(it.price)}</div></div>
+                    <div><div className="lxr-mono lxr-t-smoke sh-card__k">{t('ui.price')}</div><div className="sh-card__price lxr-num">{money(it.price)}{it.drift != null && Math.abs(it.drift - 1) >= 0.02 && <span className={'lxr-mono sh-card__drift' + (it.drift > 1 ? ' is-up' : ' is-down')}>{it.drift > 1 ? '▲' : '▼'}{Math.round(Math.abs(it.drift - 1) * 100)}%</span>}</div></div>
                     <span className="lxr-grow" />
                     {n > 0 ? (
                       <div className="sh-step"><button className="lxr-btn lxr-btn-ghost lxr-btn-sm" onClick={() => add(it, -1)}>−</button><span className="lxr-num">{n}</span><button className="lxr-btn lxr-btn-ghost lxr-btn-sm" onClick={() => add(it, 1)}>+</button></div>

@@ -74,3 +74,7 @@
 .sh-sellrow .lxr-row-sub { font-size: var(--lxr-text-micro); color: var(--lxr-smoke); }
 
 .lxr.lang-ka .sh-title, .lxr.lang-ka .sh-card__name, .lxr.lang-ka .sh-out { font-family: var(--lxr-font-ka); text-transform: none; letter-spacing: 0; }
+
+.lxr .sh-card__drift { margin-left: 6px; font-size: var(--lxr-text-micro); color: var(--lxr-smoke); }
+.lxr .sh-card__drift.is-up { color: var(--lxr-blood-lit); }
+.lxr .sh-card__drift.is-down { color: var(--lxr-ok); }

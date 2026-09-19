@@ -49,6 +49,16 @@ Config.Trade = {
     receipts = true,             -- lxr:shops:bought / sold carry the receipt for ledgers and logs
 }
 
+-- prices that move: every unit bought lifts that store's price for the item, every unit sold to the store lowers it,
+-- and the drift eases back toward the ledger price by the hour (persisted in lxr_shops_drift)
+Config.Pricing = {
+    dynamic = false,
+    upPerUnit = 0.02,            -- +2 % of the ledger price per unit bought
+    downPerUnit = 0.02,          -- −2 % per unit sold to the store
+    min = 0.5, max = 3.0,        -- the multiplier never leaves this range
+    easePerHour = 0.05,          -- the multiplier moves this much back toward 1.0 every hour
+}
+
 -- limited stock: quantities live per shop item and restock on a timer (persisted)
 Config.Stock = {
     limited = false,             -- false: every shelf is bottomless

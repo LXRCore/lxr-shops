@@ -92,6 +92,51 @@ local function seed()
 end
 
 -- ═══════════════════════════════════════════════════════════════════════════════
+-- 📈 PRICES THAT MOVE — a multiplier per store and item, eased back by the hour
+-- ═══════════════════════════════════════════════════════════════════════════════
+local drift = {}   -- store id → item → multiplier
+local function driftOf(store, item)
+    if not Config.Pricing.dynamic then return 1.0 end
+    local d = drift[store.id]
+    return d and d[item] or 1.0
+end
+local function nudgePrice(store, item, units, up)
+    if not Config.Pricing.dynamic or units <= 0 then return end
+    drift[store.id] = drift[store.id] or {}
+    local m = drift[store.id][item] or 1.0
+    m = m + (up and Config.Pricing.upPerUnit or -Config.Pricing.downPerUnit) * units
+    m = math.max(Config.Pricing.min, math.min(Config.Pricing.max, m))
+    drift[store.id][item] = m
+    LXRCore.DB.UpdateAsync('INSERT INTO lxr_shops_drift (store, item, mult) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE mult = VALUES(mult)', { store.id, item, m })
+end
+if Config.Pricing.dynamic then
+    LXRCore.DB.RegisterMigration(RES, '0002_shop_drift', [[
+CREATE TABLE IF NOT EXISTS `lxr_shops_drift` (
+  `store` VARCHAR(64) NOT NULL,
+  `item` VARCHAR(64) NOT NULL,
+  `mult` DECIMAL(6,3) NOT NULL DEFAULT 1.000,
+  PRIMARY KEY (`store`, `item`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+]])
+    CreateThread(function()
+        Wait(2000)
+        for _, row in ipairs(LXRCore.DB.Query('SELECT store, item, mult FROM lxr_shops_drift') or {}) do
+            drift[row.store] = drift[row.store] or {}
+            drift[row.store][row.item] = tonumber(row.mult) or 1.0
+        end
+        while true do
+            Wait(3600000)
+            for sid, items in pairs(drift) do
+                for item, m in pairs(items) do
+                    local eased = m > 1 and math.max(1, m - Config.Pricing.easePerHour) or math.min(1, m + Config.Pricing.easePerHour)
+                    if eased ~= m then items[item] = eased LXRCore.DB.UpdateAsync('UPDATE lxr_shops_drift SET mult = ? WHERE store = ? AND item = ?', { eased, sid, item }) end
+                end
+            end
+        end
+    end)
+end
+
+-- ═══════════════════════════════════════════════════════════════════════════════
 -- 🧾 THE COUNTER
 -- ═══════════════════════════════════════════════════════════════════════════════
 local function counter(src, store)
@@ -102,7 +147,7 @@ local function counter(src, store)
         for _, shelf in ipairs(S.Shelves(store.kind)) do
             local items = {}
             for _, def in ipairs(shelf.items) do
-                items[#items + 1] = { name = def.name, label = def.label, description = def.description, category = def.category, price = S.Price(def.name, store, isClosed), stock = Config.Stock.limited and qty(store, def.name) or nil, weight = def.weight, rarity = def.rarity }
+                items[#items + 1] = { name = def.name, label = def.label, description = def.description, category = def.category, price = S.Price(def.name, store, isClosed, driftOf(store, def.name)), drift = Config.Pricing.dynamic and driftOf(store, def.name) or nil, stock = Config.Stock.limited and qty(store, def.name) or nil, weight = def.weight, rarity = def.rarity }
             end
             shelves[#shelves + 1] = { label = shelf.label, items = items }
         end
@@ -148,7 +193,7 @@ LXR.RPC.Register('lxr-shops:buy', function(src, id, cart, account)
         if not def or n <= 0 or n > Config.Trade.maxPerPurchase then return false, 'invalid' end
         if qty(store, name) < n then return false, 'out_of_stock', def.label end
         if def.unique and n > 1 then n = 1 end
-        local price = S.Price(name, store, isClosed)
+        local price = S.Price(name, store, isClosed, driftOf(store, name))
         total = total + price * n
         lines[#lines + 1] = { name = name, amount = n, price = price, def = def }
     end
@@ -165,7 +210,7 @@ LXR.RPC.Register('lxr-shops:buy', function(src, id, cart, account)
         if l.def.unique then
             for _ = 1, l.amount do ok = P.Functions.AddItem(l.name, 1, nil, nil, 'shop:' .. store.id) end
         else ok = P.Functions.AddItem(l.name, l.amount, nil, nil, 'shop:' .. store.id) end
-        if ok then take(store, l.name, l.amount) receipt[#receipt + 1] = { name = l.name, amount = l.amount, price = l.price } end
+        if ok then take(store, l.name, l.amount) nudgePrice(store, l.name, l.amount, true) receipt[#receipt + 1] = { name = l.name, amount = l.amount, price = l.price } end
     end
     LXRCore.Emit('lxr:shops:bought', nil, src, store.id, receipt, total)
     if Config.Debug.log then LXRCore.Log.info('shops', ('bought $%.2f at %s'):format(total, store.id), { source = src, lines = #receipt }) end
@@ -185,6 +230,7 @@ LXR.RPC.Register('lxr-shops:sell', function(src, id, slot, amount)
     local total = LXRShared.Round(offer * n, 2)
     if not P.Functions.RemoveItem(it.name, n, it.slot, 'sold:' .. store.id) then return false, 'invalid' end
     P.Functions.AddMoney(Config.Trade.account, total, 'sold:' .. store.id)
+    nudgePrice(store, it.name, n, false)
     LXRCore.Emit('lxr:shops:sold', nil, src, store.id, { name = it.name, amount = n, price = offer }, total)
     return true, counter(src, store), total
 end)
@@ -201,7 +247,7 @@ end)
 AddEventHandler('playerDropped', function() buckets[source] = nil end)
 
 exports('GetStore', S.Store)
-exports('Price', function(name, storeId) return S.Price(name, S.Store(storeId), closed()) end)
+exports('Price', function(name, storeId) local st = S.Store(storeId) return S.Price(name, st, closed(), st and driftOf(st, name) or 1) end)
 exports('Offer', function(name, info, storeId) return S.Offer(name, info, S.Store(storeId)) end)
 exports('GetStock', function(storeId, item) local st = S.Store(storeId) return st and qty(st, item) or 0 end)
 exports('SetStock', function(storeId, item, n) local st = S.Store(storeId) if not st or not Config.Stock.limited then return false end stock[st.id][item] = math.max(0, math.floor(tonumber(n) or 0)) take(st, item, 0) return true end)

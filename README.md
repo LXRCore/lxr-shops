@@ -21,6 +21,7 @@ and what the store buys from you.
 * **Selling** — `Config.Buys[kind]` says what a store takes; the offer is a
   share of the ledger value by quality (durability 0–100 maps onto the
   catalog's grades). Butchers and the fence are buy-heavy; saloons buy nothing.
+* **Prices that move** — off by default: bought units lift the price, sold units lower it, clamped (`min`/`max`) and eased back by the hour; per store and item, persisted. `Config.Pricing`.
 * **Stock** — bottomless by default; `Config.Stock.limited` gives every shelf
   line a quantity, restocks on a timer and persists in `lxr_shops_stock`.
 * **One purchase, one charge** — the cart is validated line by line (shelf,

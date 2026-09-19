@@ -62,9 +62,9 @@ function S.Buys(kind, def)
 end
 
 ---Retail price at a store: ledger value × store mark-up (× night mark-up when closed).
-function S.Price(name, store, closed)
+function S.Price(name, store, closed, drift)
     local v = LXRShared.ItemValue(name)
-    local mult = (store and store.priceMult or 1) * (closed and Config.Trade.closedMult or 1)
+    local mult = (store and store.priceMult or 1) * (closed and Config.Trade.closedMult or 1) * (tonumber(drift) or 1)
     return LXRShared.Round(v * mult, 2)
 end
 

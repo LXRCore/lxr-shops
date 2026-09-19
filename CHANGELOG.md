@@ -1,6 +1,7 @@
 # Changelog
 
 ## 3.0.0 — 2026-09-19
+* Prices that move (`Config.Pricing.dynamic`): every unit bought lifts that store's price for the item, every unit sold to it lowers it, clamped and eased back toward the ledger by the hour; persisted in `lxr_shops_drift`; the shelf tile shows the drift.
 * LXRCore v3 release line: every resource ships as 3.0.0 from here (the entries below are the road to it).
 
 ## 3.1.0 — 2026-09-18
