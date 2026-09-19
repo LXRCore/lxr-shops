@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.0 — 2026-09-19
+* LXRCore v3 release line: every resource ships as 3.0.0 from here (the entries below are the road to it).
+
 ## 3.1.0 — 2026-09-18
 
 * The counter rebuilt as a Vite + React bundle on the kit: shelves as a category list with counts, item cards with pictures from the inventory icon set, stock badges, search, Buy / Sell / Purchases tabs, a basket with per-line steppers, and a choice of purse (cash or bank — `Config.Trade.accounts`)
